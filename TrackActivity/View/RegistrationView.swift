@@ -6,17 +6,17 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct RegistrationView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var confirmPassword = ""
-    
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+
     var body: some View {
         VStack {
-            Text("Registration Screen")
-                .font(.title)
-                .padding()
             
             // Email, password, and confirm password fields
             TextField("Email", text: $email)
@@ -39,6 +39,9 @@ struct RegistrationView: View {
                     .background(Color.green)
                     .cornerRadius(8)
             }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+            }
             
             Spacer()
         }
@@ -47,10 +50,30 @@ struct RegistrationView: View {
     }
     
     func register() {
-        // Implement registration logic here
+        // Check if passwords match
+        guard password == confirmPassword else {
+            showAlert = true
+            alertMessage = "Passwords do not match."
+            return
+        }
+        
+        // Register user with email and password
+        Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+            if let error = error {
+                showAlert = true
+                alertMessage = "Error: \(error.localizedDescription)"
+                return
+            }
+            
+            // Registration successful
+            showAlert = true
+            alertMessage = "User registered successfully!"
+        }
     }
 }
 
-#Preview {
-    RegistrationView()
+struct RegistrationView_Previews: PreviewProvider {
+    static var previews: some View {
+        RegistrationView()
+    }
 }

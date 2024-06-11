@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 class LoginViewModel: ObservableObject {
     @Published var email = ""
@@ -13,6 +14,18 @@ class LoginViewModel: ObservableObject {
     @Published var isLoginSuccess = false
     
     func login() {
-            self.isLoginSuccess = true
+        
+        Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
+            guard let strongSelf = self else { return }
+            if let error = error {
+                print("Error logging in: \(error.localizedDescription)")
+                return
+            }
+            // Login successful
+            print("User logged in successfully!")
+            self?.isLoginSuccess = true
+            // Optionally: Perform segue to the next screen
+        }
+        
     }
 }
