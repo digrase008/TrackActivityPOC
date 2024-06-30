@@ -1,0 +1,1 @@
+This project is a versatile mobile application designed to help users track their physical activity and maintain their fitness goals. It features a Firebase-powered authentication module for secure user registration and login, along with comprehensive tracking of various exercises, including push-ups, squats, and jumping jacks.
